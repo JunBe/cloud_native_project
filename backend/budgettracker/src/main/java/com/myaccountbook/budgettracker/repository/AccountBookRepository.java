@@ -17,6 +17,6 @@ public interface AccountBookRepository extends JpaRepository<AccountBook, Intege
     //날짜 기준 내림차순 정렬
     List<AccountBook> findByTypeOrderByDateDesc(AccountBook.Type type);
 
-    @Query("SELECT a.category, SUM(a.amount) FROM AccountBook a WHERE YEAR(a.date) = :year AND MONTH(a.date) = :month GROUP BY a.category")
+    @Query("SELECT a.category, SUM(a.amount), a.type FROM AccountBook a WHERE YEAR(a.date) = :year AND MONTH(a.date) = :month GROUP BY a.category")
     List<Object[]> findMonthlyStatistics(@Param("year") int year, @Param("month") int month);
 }
