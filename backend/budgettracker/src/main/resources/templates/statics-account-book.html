@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>월별 통계</title>
+</head>
+<body>
+<h1>월별 통계</h1>
+
+<!-- 년도와 월 입력 -->
+<form action="/statistics" method="post">
+    <label for="year">년도:</label>
+    <input type="number" id="year" name="year" min="2000" max="2100" required />
+
+    <label for="month">월:</label>
+    <input type="number" id="month" name="month" min="1" max="12" required />
+
+    <button type="submit">통계 보기</button>
+</form>
+<hr />
+
+<div>
+    <h2 th:text="'통계 결과: ' + ${year} + '년 ' + ${month} + '월'"></h2>
+
+    <div style="display: flex;">
+
+        <!-- 수입 테이블 -->
+        <table border="1" style="margin-right: 20px;">
+            <caption>수입</caption>
+            <thead>
+            <tr>
+                <th>카테고리</th>
+                <th>금액</th>
+                <th>비율</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="stat : ${incomeStatistics}">
+                <td th:text="${stat.category}"></td>
+                <td th:text="${#numbers.formatDecimal(stat.amount, 0, 0)}"></td>
+                <td th:text="${stat.percentage} + '%'"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- 지출 테이블 -->
+        <table border="1">
+            <caption>지출</caption>
+            <thead>
+            <tr>
+                <th>카테고리</th>
+                <th>금액</th>
+                <th>비율</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="stat : ${expenseStatistics}">
+                <td th:text="${stat.category}"></td>
+                <td th:text="${#numbers.formatDecimal(stat.amount, 0, 0)}"></td>
+                <td th:text="${stat.percentage} + '%'"></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<div>
+    <a th:href="@{/}" style="text-decoration: none;">뒤로 가기</a>
+</div>
+
+
+
+<!-- 결과 표시 -->
+<!--<div th:if="${!#lists.isEmpty(statistics)}">-->
+<!--    <h2 th:text="'통계 결과: ' + ${year} + '년 ' + ${month} + '월'"></h2>-->
+<!--    <table border="1">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th>카테고리</th>-->
+<!--            <th>금액</th>-->
+<!--            <th>비율</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr th:each="stat : ${statistics}">-->
+<!--            <td th:text="${stat.category}"></td>-->
+<!--            <td th:text="${#numbers.formatDecimal(stat.amount, 0, 0)}"></td>-->
+<!--            <td th:text="${#numbers.formatDecimal(stat.percentage,1,2)} + '%'"></td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--    </table>-->
+<!--</div>-->
+<!--<div th:if="${#lists.isEmpty(statistics)}">-->
+<!--    <p>조회할 데이터가 없습니다.</p>-->
+<!--</div>-->
+
+<!--<div>-->
+<!--    <a href="/account-book">뒤로 가기</a>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->

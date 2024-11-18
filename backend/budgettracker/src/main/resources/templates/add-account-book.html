@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>등록하기</title>
+</head>
+<body>
+<h1>등록하기</h1>
+<!-- 입력 폼 -->
+<form th:action="@{/account-book/add}" th:object="${newEntry}" method="post">
+    <label>날짜:</label>
+    <input type="date" th:field="*{date}" required />
+    <label>가격:</label>
+    <input type="number" th:field="*{amount}" step="0.01" required />
+    <label>분류:</label>
+    <input type="text" th:field="*{category}" required />
+    <label>내용:</label>
+    <input type="text" th:field="*{description}" />
+    <label>종류 선택: </label>
+    <select th:field="*{type}" required>
+        <option value="INCOME">수입</option>
+        <option value="EXPENSE">지출</option>
+    </select>
+    <button type="submit">추가</button>
+</form>
+<div>
+    <a href="/account-book">뒤로 가기</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Account Book</title>
+</head>
+<body>
+<h1>Account Book</h1>
+
+<!-- 추가 -->
+<div>
+    <a href="/account-book/add">내역 추가</a>
+</div>
+
+<div>
+    <a href="/statistics">통계</a>
+</div>
+
+
+<div>
+    <form th:action="@{/account-book/delete}" method="post">
+        <button type="submit">모두 삭제</button>
+    </form>
+</div>
+<!-- 항목 리스트 -->
+<h2>수입</h2>
+<table>
+    <thead>
+    <tr>
+        <th>날짜</th>
+        <th>가격</th>
+        <th>분류</th>
+        <th>내용</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="income : ${incomes}">
+        <td th:text="${income.date}"></td>
+        <td th:text="${#numbers.formatDecimal(income.amount, 0, 0)}"></td>
+        <td th:text="${income.category}"></td>
+        <td th:text="${income.description}"></td>
+        <td>
+            <form th:action="@{/account-book/edit/{id}(id=${income.id})}" method="get">
+                <button type="submit">수정</button>
+            </form>
+        </td>
+        <td>
+            <form th:action="@{/account-book/delete/{id}(id=${income.id})}" method="post">
+                <button type="submit">삭제</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>지출</h2>
+<table>
+    <thead>
+    <tr>
+        <th>날짜</th>
+        <th>가격</th>
+        <th>분류</th>
+        <th>내용</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="expense : ${expenses}">
+        <td th:text="${expense.date}"></td>
+        <td th:text="${#numbers.formatDecimal(expense.amount, 0, 0)}"></td>
+        <td th:text="${expense.category}"></td>
+        <td th:text="${expense.description}"></td>
+        <td>
+            <form th:action="@{/account-book/edit/{id}(id=${expense.id})}" method="get">
+                <button type="submit">수정</button>
+            </form>
+        </td>
+        <td>
+            <form th:action="@{/account-book/delete/{id}(id=${expense.id})}" method="post">
+                <button type="submit">삭제</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+
+</table>
+</body>
+</html>

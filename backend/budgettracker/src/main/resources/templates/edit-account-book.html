@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수정하기</title>
+</head>
+<body>
+<h1>수정하기</h1>
+<form th:action="@{/account-book/update}" th:object="${accountBook}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+
+    <label>날짜:</label>
+    <span th:text="${accountBook.date}"></span>
+    <input type="date" th:field="*{date}" required />
+    <label>가격:</label>
+    <input type="number" th:field="*{amount}" step="0.01" required />
+    <label>분류:</label>
+    <input type="text" th:field="*{category}" required />
+    <label>내용:</label>
+    <input type="text" th:field="*{description}" />
+    <label>종류 선택:</label>
+    <select th:field="*{type}" required>
+        <option value="INCOME" th:selected="${accountBook.type == T(com.myaccountbook.budgettracker.entity.AccountBook.Type).INCOME}">수입</option>
+        <option value="EXPENSE" th:selected="${accountBook.type == T(com.myaccountbook.budgettracker.entity.AccountBook.Type).EXPENSE}">지출</option>
+    </select>
+    <button type="submit">수정</button>
+</form>
+<a href="/account-book">뒤로 가기</a>
+</body>
+</html>
