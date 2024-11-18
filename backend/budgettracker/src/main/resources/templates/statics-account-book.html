@@ -18,11 +18,11 @@
 </form>
 <hr />
 
-<div>
+<div th:if="${!#lists.isEmpty(statistics)}">
     <h2 th:text="'통계 결과: ' + ${year} + '년 ' + ${month} + '월'"></h2>
 
     <div style="display: flex;">
-
+    <div style="display: flex; flex-direction: column; align-items: flex-start;">
         <!-- 수입 테이블 -->
         <table border="1" style="margin-right: 20px;">
             <caption>수입</caption>
@@ -41,9 +41,12 @@
             </tr>
             </tbody>
         </table>
+        <p> <span th:text="'총 수입 : ' + ${#numbers.formatDecimal(incomeTotalAmount, 0, 0)}"></span> </p>
+    </div>
 
+    <div style="display: flex; flex-direction: column; align-items: flex-start;">
         <!-- 지출 테이블 -->
-        <table border="1">
+        <table border="1" style="margin-right: 20px;">
             <caption>지출</caption>
             <thead>
             <tr>
@@ -60,42 +63,20 @@
             </tr>
             </tbody>
         </table>
-
+        <p> <span th:text="'총 지출 : ' + ${#numbers.formatDecimal(expenseTotalAmount, 0, 0)}"></span> </p>
+    </div>
+    </div>
+    <div>
+        <p><span th:text="'이번 달 총 수입 : '+${#numbers.formatDecimal(totalAmount,0,0)}"></span></p>
     </div>
 </div>
 
+
+<div th:if="${#lists.isEmpty(statistics)}">
+    <p>조회할 데이터가 없습니다.</p>
+</div>
 <div>
-    <a th:href="@{/}" style="text-decoration: none;">뒤로 가기</a>
+    <a href="/account-book">뒤로 가기</a>
 </div>
 
 
-
-<!-- 결과 표시 -->
-<!--<div th:if="${!#lists.isEmpty(statistics)}">-->
-<!--    <h2 th:text="'통계 결과: ' + ${year} + '년 ' + ${month} + '월'"></h2>-->
-<!--    <table border="1">-->
-<!--        <thead>-->
-<!--        <tr>-->
-<!--            <th>카테고리</th>-->
-<!--            <th>금액</th>-->
-<!--            <th>비율</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--        <tr th:each="stat : ${statistics}">-->
-<!--            <td th:text="${stat.category}"></td>-->
-<!--            <td th:text="${#numbers.formatDecimal(stat.amount, 0, 0)}"></td>-->
-<!--            <td th:text="${#numbers.formatDecimal(stat.percentage,1,2)} + '%'"></td>-->
-<!--        </tr>-->
-<!--        </tbody>-->
-<!--    </table>-->
-<!--</div>-->
-<!--<div th:if="${#lists.isEmpty(statistics)}">-->
-<!--    <p>조회할 데이터가 없습니다.</p>-->
-<!--</div>-->
-
-<!--<div>-->
-<!--    <a href="/account-book">뒤로 가기</a>-->
-<!--</div>-->
-<!--</body>-->
-<!--</html>-->
