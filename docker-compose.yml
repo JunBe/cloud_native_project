@@ -6,8 +6,6 @@ services:
     container_name: nginx-container
     ports:
       - "80:80"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - backend
       - frontend
@@ -27,7 +25,6 @@ services:
       - "8080:8080" # 호스트 8080번 포트를 컨테이너의 8080번 포트로 매핑
     depends_on:
       - mysql
-      - redis
     networks:
       - app-network
 
@@ -43,14 +40,6 @@ services:
       - app-network
     volumes:
       - mysql-data:/var/lib/mysql
-
-  redis:
-    image: redis:latest
-    container_name: redis
-    ports:
-      - "6379:6379" # Redis 기본 포트
-    networks:
-      - app-network
 
 volumes:
   mysql-data:
