@@ -1,12 +1,12 @@
 package com.myaccountbook.budgettracker.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -24,9 +24,14 @@ public class AccountBook {
     @Enumerated(EnumType.STRING) // ENUM 타입 매핑
     private Type type;
 
-    public enum Type{
+    public enum Type {
         INCOME, EXPENSE
     }
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
+    private User user;
 
 }
