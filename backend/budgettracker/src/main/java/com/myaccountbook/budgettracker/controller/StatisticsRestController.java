@@ -2,42 +2,42 @@ package com.myaccountbook.budgettracker.controller;
 
 import com.myaccountbook.budgettracker.dto.CategoryStatistics;
 import com.myaccountbook.budgettracker.entity.AccountBook;
+import com.myaccountbook.budgettracker.entity.User;
 import com.myaccountbook.budgettracker.repository.AccountBookRepository;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Controller
-@RequestMapping("/statistics")
-public class StatisticsController {
+@RestController
+@RequestMapping("/api/statistics")
+public class StatisticsRestController {
     private final AccountBookRepository accountBookRepository;
 
-    public StatisticsController(AccountBookRepository accountBookRepository) {
+    public StatisticsRestController(AccountBookRepository accountBookRepository) {
         this.accountBookRepository = accountBookRepository;
     }
 
-    //통계 페이지 이동
-    @GetMapping
-    public String showStaticsPage(Model model) {
-        List<AccountBook> accountBooks = accountBookRepository.findAll();
-        model.addAttribute("accountBooks", accountBooks);
-        return "statics-account-book";
-    }
-
     //총 통계
-    @PostMapping
-    public String getMonthlyStatics(@RequestParam int year,
-                                    @RequestParam int month,
-                                    Model model) {
-        List<Object[]> rawStatistics = accountBookRepository.findMonthlyStatistics(year, month);
+    @GetMapping
+    public ResponseEntity<?> getMonthlyStatics(@RequestParam int year,
+                                               @RequestParam int month
+                                               , HttpSession session
+                                               ) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+        List<Object[]> rawStatistics = accountBookRepository.findMonthlyStatistics(user, year, month);
 //---------------------------------------------------------총
         BigDecimal totalAmount = rawStatistics.stream()
                 .map(row -> (BigDecimal) row[1])
@@ -84,17 +84,15 @@ public class StatisticsController {
             }
         }
 
+        Map<String, Object> response = new HashMap<>();
+        response.put("statistics", statistics);
+        response.put("incomeStatistics", incomeStatistics);
+        response.put("expenseStatistics", expenseStatistics);
+        response.put("incomeTotalAmount", incomeTotalAmount);
+        response.put("expenseTotalAmount", expenseTotalAmount);
+        response.put("totalAmount", incomeTotalAmount.subtract(expenseTotalAmount));
 
-        model.addAttribute("incomeTotalAmount", incomeTotalAmount);
-        model.addAttribute("expenseTotalAmount", expenseTotalAmount);
-        model.addAttribute("incomeStatistics", incomeStatistics);
-        model.addAttribute("expenseStatistics", expenseStatistics);
-        model.addAttribute("totalAmount", incomeTotalAmount.subtract(expenseTotalAmount));
-        model.addAttribute("statistics", statistics);
-        model.addAttribute("year", year);
-        model.addAttribute("month", month);
-
-        return "statics-account-book";
+        return ResponseEntity.ok(response);
     }
 
 }
