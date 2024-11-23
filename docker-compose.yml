@@ -1,0 +1,60 @@
+version: "3.8"
+
+services:
+  nginx:
+    image: junbe99/nginx:latest
+    container_name: nginx-container
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - app-network
+
+  frontend:
+    image: junbe99/frontend:latest
+    container_name: frontend
+    networks:
+      - app-network
+
+  backend:
+    image: junbe99/backend:latest
+    container_name: backend
+    ports:
+      - "8080:8080" # 호스트 8080번 포트를 컨테이너의 8080번 포트로 매핑
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - "3306:3306" # MySQL 기본 포트
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: account_book
+    networks:
+      - app-network
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379" # Redis 기본 포트
+    networks:
+      - app-network
+
+volumes:
+  mysql-data:
+
+networks:
+  app-network:
+    driver: bridge
